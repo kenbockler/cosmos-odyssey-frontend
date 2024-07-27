@@ -1,0 +1,65 @@
+/* Globaalsed baasstiilid */
+:root {
+  --background-color: #242424; /* Taustavärv */
+  --text-color: rgba(255, 255, 255, 0.87); /* Teksti värv */
+  --link-color: #646cff; /* Lingi värv */
+  --link-hover-color: #535bf2; /* Lingi hover värv */
+  --button-bg-color: #1a1a1a; /* Nupu taustavärv */
+  --button-border-color: #646cff; /* Nupu piiri värv */
+  --button-hover-bg-color: #4357AD; /* Nupu hover taustavärv */
+  --primary-color: #5C7AEA; /* Peamine brändi värv */
+  --primary-dark-color: #4357AD; /* Tumedam variatsioon peamisest värvist */
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  flex-direction: column;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+/* Globaalsed lingi stiilid */
+a {
+  font-weight: 500;
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--link-hover-color);
+}
+
+/* Globaalsed nupu stiilid */
+button {
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  background-color: var(--button-bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background-color 0.25s, border-color 0.25s;
+}
+
+button:hover {
+  background-color: var(--button-hover-bg-color);
+  border-color: var(--button-border-color);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}

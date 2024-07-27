@@ -1,0 +1,72 @@
+.tenant-dashboard-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--background-color);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
+    box-sizing: border-box;
+}
+
+.tenant-dashboard-header {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.tenant-dashboard-search {
+    position: relative;
+    margin-bottom: 2rem;
+    background: var(--background-color);
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0.5rem;
+}
+
+.tenant-dashboard-search input {
+    width: calc(100% - 40px);
+    border: none;
+    padding: 0.8rem;
+    margin-right: 0.5rem;
+    border-radius: 4px;
+}
+
+.tenant-dashboard-search-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+.tenant-dashboard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tenant-dashboard-list-item {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+    background: var(--button-bg-color);
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.tenant-dashboard-list-item:hover {
+    background-color: var(--primary-dark-color);
+}
+
+.tenant-dashboard-list-icon {
+    margin-right: 0.5rem;
+    color: var(--primary-color);
+}
+
+.tenant-dashboard-list-text {
+    flex: 1;
+}
