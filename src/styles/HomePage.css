@@ -1,23 +1,56 @@
-/* App.css */
+/* HomePage.css */
+.home-page {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    color: var(--text-color);
+}
+
+.home-page h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.route-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.route-form label {
+    color: var(--text-color);
+}
+
 .route-form select {
     width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #444;
     border-radius: 4px;
-    background-color: white;
+    background-color: #2a2a2a;
+    color: var(--text-color);
+    box-sizing: border-box;
 }
 
 .route-form button {
     width: 100%;
-    padding: 10px;
-    background-color: #007bff;
+    padding: 12px;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    box-sizing: border-box;
 }
 
-.route-form button:hover {
-    background-color: #0056b3;
+.route-form button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+.route-form button:hover:enabled {
+    background-color: var(--primary-dark-color);
 }
