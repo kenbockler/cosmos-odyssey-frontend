@@ -1,0 +1,63 @@
+.routes-page {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    position: relative; /* Et tagada korrektne nuppu positsioneerimine */
+}
+
+h2 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.routes-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--background-color);
+    margin-bottom: 60px;
+}
+
+.routes-table th, .routes-table td {
+    border: 1px solid #444;
+    padding: 8px;
+    text-align: left;
+    font-size: 0.775rem;
+}
+
+.routes-table th {
+    background-color: var(--primary-dark-color);
+    color: white;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.routes-table tr:nth-child(even) {
+    background-color: #2a2a2a;
+}
+
+.routes-table tr:hover {
+    background-color: #3a3a3a;
+}
+
+.back-link {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000; /* Et nupp oleks teiste elementide ees */
+}
+
+.back-button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: var(--primary-dark-color);
+}

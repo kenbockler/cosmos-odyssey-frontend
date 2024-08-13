@@ -1,21 +1,40 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 function HomePage() {
+    const [departure, setDeparture] = useState('');
+    const [destination, setDestination] = useState('');
+
+    const planets = [
+        'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'
+    ];
+
     return (
         <div className="home-page">
-            <h1>Cosmos Odyssey</h1>
-            <h2>Find Your Route</h2>
+            <h2>Find the Best Route</h2>
             <form className="route-form">
                 <label>
                     Departure:
-                    <input type="text" placeholder="Enter departure location" />
+                    <select value={departure} onChange={(e) => setDeparture(e.target.value)}>
+                        <option value="">Select a planet</option>
+                        {planets.map((planet) => (
+                            <option key={planet} value={planet}>{planet}</option>
+                        ))}
+                    </select>
                 </label>
                 <label>
                     Destination:
-                    <input type="text" placeholder="Enter destination" />
+                    <select value={destination} onChange={(e) => setDestination(e.target.value)}>
+                        <option value="">Select a planet</option>
+                        {planets.map((planet) => (
+                            <option key={planet} value={planet}>{planet}</option>
+                        ))}
+                    </select>
                 </label>
-                <Link to="/reserve">
-                    <button type="button">Search Routes</button>
+                <Link to={`/routes?from=${departure}&to=${destination}`}>
+                    <button type="button" disabled={!departure || !destination}>
+                        Search Routes
+                    </button>
                 </Link>
             </form>
         </div>

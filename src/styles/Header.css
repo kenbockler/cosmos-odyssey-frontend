@@ -1,0 +1,26 @@
+.App-header {
+    width: 100%;
+    text-align: center;
+    margin: 20px 0;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.svg-container {
+    width: 100%;
+    text-align: center;
+    margin: 50px 0;
+}
+
+.curved-text {
+    width: 100%;
+    height: auto;
+}
+
+.App-header textPath {
+    font-family: 'Arial', sans-serif;
+    fill: white;
+    font-size: 24px;
+}
