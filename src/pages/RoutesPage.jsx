@@ -7,11 +7,18 @@ function RoutesPage() {
     const [companyFilter, setCompanyFilter] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('');
-    const location = useLocation();
+    const [selectedRoute, setSelectedRoute] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const from = queryParams.get('from');
     const to = queryParams.get('to');
+
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [notification, setNotification] = useState({ message: '', type: '' });
+
 
     useEffect(() => {
         const fetchRoutes = async () => {
@@ -83,15 +90,104 @@ function RoutesPage() {
             minute: '2-digit',
             hour12: false,
         };
-        return new Date(dateString).toLocaleDateString('en-GB', options).replace(',', ''); // Eemaldab koma kuupäeva ja aja vahel
+        return new Date(dateString).toLocaleDateString('en-GB', options).replace(',', '');
     };
 
     const formatDistance = (distance) => {
         return distance.toLocaleString().replace(/,/g, ' ');
     };
 
+    const openReservationModal = (route) => {
+        setSelectedRoute(route);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedRoute(null);
+    };
+
+    const handleReservation = async () => {
+        if (firstName.trim() === '' || lastName.trim() === '') {
+            showNotification('Please fill in both your first and last name.', 'error');
+            return;
+        }
+
+        let totalPrice = selectedRoute.totalPrice;
+        if (typeof totalPrice === 'string') {
+            totalPrice = totalPrice.replace('€', '').trim();
+        }
+        totalPrice = parseFloat(totalPrice).toFixed(2);
+
+        let totalTravelTime = selectedRoute.totalTravelTime;
+        if (typeof totalTravelTime === 'string') {
+            totalTravelTime = totalTravelTime.replace(' hours', '').trim();
+        }
+        totalTravelTime = parseFloat(totalTravelTime).toFixed(2);
+
+        const priceListId = selectedRoute.priceListId;
+        if (!priceListId) {
+            showNotification('Price list ID is missing.', 'error');
+            return;
+        }
+
+        const reservationData = {
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            route: selectedRoute.route,
+            totalQuotedPrice: parseFloat(totalPrice),
+            totalQuotedTravelTime: parseFloat(totalTravelTime),
+            companyNames: selectedRoute.companyNames,
+            priceList: {
+                priceListId: priceListId
+            }
+        };
+
+        console.log('Sending reservation data:', reservationData);
+
+        try {
+            const response = await fetch('http://localhost:9090/api/reservations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(reservationData),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                if (errorData.message) {
+                    throw new Error(errorData.message);
+                }
+                throw new Error('Failed to make the reservation.');
+            }
+
+            showNotification('Reservation made successfully!', 'success');
+            closeModal();
+        } catch (error) {
+            console.error('Reservation failed:', error);
+            showNotification(`Reservation failed: ${error.message}`, 'error');
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 5000);
+        }
+    };
+
+    const showNotification = (message, type) => {
+        setNotification({ message, type });
+        setTimeout(() => {
+            setNotification({ message: '', type: '' });
+        }, 3000);
+    };
+
     return (
         <div className="routes-page">
+            {notification.message && (
+                <div className={`notification ${notification.type}`}>
+                    {notification.message}
+                </div>
+            )}
             <h2>Routes from {from} to {to}</h2>
             <div className="filter-container">
                 <input
@@ -105,7 +201,14 @@ function RoutesPage() {
             <div className="sort-container-mobile">
                 <select
                     value={sortField}
-                    onChange={(e) => setSortField(e.target.value)}
+                    onChange={(e) => {
+                        setSortField(e.target.value);
+                        if (e.target.value) {
+                            setSortOrder('asc');
+                        } else {
+                            setSortOrder('');
+                        }
+                    }}
                     className="sort-select"
                 >
                     <option value="">Sort By...</option>
@@ -119,46 +222,115 @@ function RoutesPage() {
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value)}
                     className="sort-select"
+                    disabled={!sortField}
                 >
                     <option value="asc">Ascending</option>
                     <option value="desc">Descending</option>
                 </select>
             </div>
+
             <div className="routes-container">
-                <div className="routes-header">
-                    <div>Company</div>
-                    <div>Route</div>
-                    <div onClick={() => handleSort('firstFlightStart')}>
-                        First Flight Start {sortField === 'firstFlightStart' ? (sortOrder === 'asc' ? '↑' : sortOrder === 'desc' ? '↓' : '') : ''}
-                    </div>
-                    <div onClick={() => handleSort('lastFlightEnd')}>
-                        Last Flight End {sortField === 'lastFlightEnd' ? (sortOrder === 'asc' ? '↑' : sortOrder === 'desc' ? '↓' : '') : ''}
-                    </div>
-                    <div onClick={() => handleSort('totalPrice')}>
-                        Total Price {sortField === 'totalPrice' ? (sortOrder === 'asc' ? '↑' : sortOrder === 'desc' ? '↓' : '') : ''}
-                    </div>
-                    <div onClick={() => handleSort('totalTravelTime')}>
-                        Total Travel Time {sortField === 'totalTravelTime' ? (sortOrder === 'asc' ? '↑' : sortOrder === 'desc' ? '↓' : '') : ''}
-                    </div>
-                    <div onClick={() => handleSort('totalDistance')}>
-                        Total Distance {sortField === 'totalDistance' ? (sortOrder === 'asc' ? '↑' : sortOrder === 'desc' ? '↓' : '') : ''}
-                    </div>
-                </div>
-                {filteredRoutes.map((route) => (
-                    <div key={route.combinedRouteId} className="route-card">
-                        <div>{route.companyNames}</div>
-                        <div>{route.route}</div>
-                        <div>{formatDateTime(route.firstFlightStart)}</div>
-                        <div>{formatDateTime(route.lastFlightEnd)}</div>
-                        <div>€{route.totalPrice.toFixed(2)}</div>
-                        <div>{(route.totalTravelTime / (1000 * 60 * 60)).toFixed(2)} hours</div>
-                        <div>{formatDistance(route.totalDistance)} km</div>
-                    </div>
-                ))}
+                <table className="routes-table">
+                    <thead>
+                    <tr className="routes-header">
+                        <th>Company</th>
+                        <th>Route</th>
+                        <th onClick={() => handleSort('firstFlightStart')}>
+                            Departure Time {sortField === 'firstFlightStart' ? (sortOrder === 'asc' ? '▴' : '▾') : '▴▾'}
+                        </th>
+                        <th onClick={() => handleSort('lastFlightEnd')}>
+                            Arrival Time {sortField === 'lastFlightEnd' ? (sortOrder === 'asc' ? '▴' : '▾') : '▴▾'}
+                        </th>
+                        <th onClick={() => handleSort('totalPrice')}>
+                            Price {sortField === 'totalPrice' ? (sortOrder === 'asc' ? '▴' : '▾') : '▴▾'}
+                        </th>
+                        <th onClick={() => handleSort('totalTravelTime')}>
+                            Travel Time {sortField === 'totalTravelTime' ? (sortOrder === 'asc' ? '▴' : '▾') : '▴▾'}
+                        </th>
+                        <th onClick={() => handleSort('totalDistance')}>
+                            Distance {sortField === 'totalDistance' ? (sortOrder === 'asc' ? '▴' : '▾') : '▴▾'}
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {filteredRoutes.map((route) => (
+                        <tr
+                            key={route.combinedRouteId}
+                            className="route-card"
+                            onClick={() => openReservationModal(route)}
+                        >
+                            <td>{route.companyNames}</td>
+                            <td>{route.route}</td>
+                            <td>{formatDateTime(route.firstFlightStart)}</td>
+                            <td>{formatDateTime(route.lastFlightEnd)}</td>
+                            <td>€{route.totalPrice.toFixed(2)}</td>
+                            <td>{(route.totalTravelTime / (1000 * 60 * 60)).toFixed(2)} hours</td>
+                            <td>{formatDistance(route.totalDistance)} km</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
             </div>
             <div className="back-link">
                 <Link to="/" className="back-button">Choose Another Route</Link>
             </div>
+
+            {isModalOpen && selectedRoute && (
+                <div className="reservation-modal">
+                    <div className="modal-content">
+                        <button className="close-button" onClick={closeModal}>×</button>
+                        <h3>Reserve Your Trip</h3>
+                        <form>
+                            <div className="form-group">
+                                <label>First Name:</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter first name"
+                                    value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Last Name:</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter last name"
+                                    value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Route(s):</label>
+                                <input type="text" value={selectedRoute.route} readOnly/>
+                            </div>
+                            <div className="form-group">
+                                <label>Total Quoted Price:</label>
+                                <input type="text" value={`€${selectedRoute.totalPrice.toFixed(2)}`} readOnly/>
+                            </div>
+                            <div className="form-group">
+                                <label>Total Quoted Travel Time:</label>
+                                <input type="text"
+                                       value={`${(selectedRoute.totalTravelTime / (1000 * 60 * 60)).toFixed(2)} hours`}
+                                       readOnly/>
+                            </div>
+                            <div className="form-group">
+                                <label>Transportation Company Name(s):</label>
+                                <input
+                                    type="text"
+                                    value={selectedRoute.companyNames}
+                                    readOnly
+                                    className="auto-height-input"
+                                />
+                            </div>
+                            <button type="button" className="reserve-button" onClick={handleReservation}>
+                                Reserve Trip
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

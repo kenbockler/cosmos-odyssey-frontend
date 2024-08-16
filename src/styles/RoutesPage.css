@@ -1,4 +1,3 @@
-/* RouterPage.css */
 .routes-page {
     padding: 20px;
     max-width: 1200px;
@@ -63,7 +62,7 @@ h2 {
     display: grid;
     grid-template-columns: 1.5fr 1.5fr 2fr 2fr 1.5fr 1.5fr 1.5fr;
     background-color: var(--primary-dark-color);
-    color: white;
+    color: var(--text-color);
     padding: 12px;
     border-radius: 8px;
     font-weight: bold;
@@ -73,17 +72,18 @@ h2 {
     cursor: pointer;
 }
 
-.routes-header > div {
-    border-left: 1px solid #555;
+.routes-header th {
+    border-left: 2px solid #555;
     padding-left: 8px;
     padding-right: 8px;
 }
 
-.routes-header > div:first-child {
+.routes-header th:first-child {
     border-left: none;
 }
 
 .route-card {
+    position: relative;
     display: grid;
     grid-template-columns: 1.5fr 1.5fr 2fr 2fr 1.5fr 1.5fr 1.5fr;
     background-color: #2a2a2a;
@@ -92,23 +92,103 @@ h2 {
     margin-bottom: 10px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s;
     border: 1px solid #444;
     text-align: center;
+    cursor: pointer;
 }
 
 .route-card:hover {
-    background-color: #3a3a3a;
+    background-color: #218838;
+    transform: scale(1.02);
 }
 
-.route-card > div {
+.route-card td {
     border-left: 1px solid #555;
     padding-left: 8px;
     padding-right: 8px;
 }
 
-.route-card > div:first-child {
+.route-card td:first-child {
     border-left: none;
+}
+
+.reservation-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #2a2a2e;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 1000;
+    width: 450px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    color: #fff;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #444;
+    background-color: #1e1e1e;
+    color: #fff;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.form-group input[readonly] {
+    background-color: #3a3a3a;
+    color: #ccc;
+    border: 1px solid #555;
+    cursor: not-allowed;
+    opacity: 0.8;
+    white-space: pre-wrap;
+    overflow: hidden;
+    resize: vertical;
+    height: auto;
+    min-height: 40px;
+}
+
+.close-button {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #ab0202;
+    font-size: 2.5rem;
+    cursor: pointer;
+}
+
+.reserve-button {
+    display: inline-block;
+    background-color: #28a745;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.reserve-button:hover {
+    background-color: #218838;
 }
 
 .back-link {
@@ -129,6 +209,45 @@ h2 {
 
 .back-button:hover {
     background-color: var(--primary-dark-color);
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    z-index: 1001;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    animation: fadeInOut 3s forwards;
+}
+
+.notification.success {
+    background-color: #28a745;
+}
+
+.notification.error {
+    background-color: #dc3545;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Dynamic right value adjustment for screens wider than 1650px */
+@media screen and (min-width: 1650px) {
+    .back-link {
+        right: calc(20px + (100vw - 1650px) / 2);
+    }
 }
 
 /* Media Query for screens 836px and smaller */
@@ -170,13 +289,13 @@ h2 {
         text-align: left;
     }
 
-    .route-card > div {
+    .route-card td {
         border-left: none;
         padding: 5px 0;
         border-bottom: 1px solid #555;
     }
 
-    .route-card > div:last-child {
+    .route-card td:last-child {
         border-bottom: none;
     }
 }
