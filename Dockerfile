@@ -1,32 +1,33 @@
-#Kuidas buildida:
-#docker build -t word-cloud-frontend .
-#docker tag word-cloud-frontend estken/word-cloud-frontend
-#docker push estken/word-cloud-frontend
+# docker build -t cosmos-odyssey-frontend .
+# docker tag cosmos-odyssey-frontend estken/cosmos-odyssey-frontend
+# docker push estken/cosmos-odyssey-frontend
 
-# Node.js LTS (Long Term Support) baasil põhinev image
+# Node.js LTS (Long Term Support) based image
 FROM node:20-alpine
 
-# töökaust konteineris
+# Set the working directory inside the container
 WORKDIR /app
 
-# koopia package.json ja package-lock.json failid töökausta
+# Copy package.json and package-lock.json files to the working directory
 COPY package*.json ./
 
+# Install dependencies
 RUN npm install --legacy-peer-deps
 
-# projekti failid konteinerisse
+# Copy the project files into the container
 COPY . .
 
+# Build the project
 RUN npm run build
 
-# Image, mis sisaldab NGINX-i
+# Step 2: Use an NGINX image to serve the React app
 FROM nginx:stable-alpine
 
-# Builditud React rakendus NGINX-i vaikimisi serveri kausta
+# Copy the built React app from the build stage to NGINX's default server directory
 COPY --from=0 /app/dist /usr/share/nginx/html
 
-# pordi 80 eksport, et suhelda NGINX-iga
+# Expose port 80 to allow communication with NGINX
 EXPOSE 80
 
-# NGINX serveri käivitamine
+# Start the NGINX server
 CMD ["nginx", "-g", "daemon off;"]
