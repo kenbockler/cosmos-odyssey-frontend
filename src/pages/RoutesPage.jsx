@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 
 function RoutesPage() {
+    // const apiUrl = "http://localhost:9090";
     const apiUrl = "https://cosmos-odyssey-frontend-gthyena6aqb0hfcd.northeurope-01.azurewebsites.net";
 
     const [routes, setRoutes] = useState([]);
