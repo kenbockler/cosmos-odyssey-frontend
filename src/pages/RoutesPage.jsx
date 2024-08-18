@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 
 function RoutesPage() {
+    const apiUrl = "https://cosmos-odyssey-core-ekf4hac5hweqcmhz.northeurope-01.azurewebsites.net";
+
     const [routes, setRoutes] = useState([]);
     const [filteredRoutes, setFilteredRoutes] = useState([]);
     const [companyFilter, setCompanyFilter] = useState('');
@@ -23,7 +25,7 @@ function RoutesPage() {
     useEffect(() => {
         const fetchRoutes = async () => {
             try {
-                const response = await fetch(`http://localhost:9090/routes?from=${from}&to=${to}`);
+                const response = await fetch(`${apiUrl}/routes?from=${from}&to=${to}`);
                 const data = await response.json();
                 setRoutes(data);
                 setFilteredRoutes(data);
@@ -35,7 +37,7 @@ function RoutesPage() {
         if (from && to) {
             fetchRoutes();
         }
-    }, [from, to]);
+    }, [from, to, apiUrl]);
 
     useEffect(() => {
         let filtered = routes.filter(route =>
@@ -146,7 +148,7 @@ function RoutesPage() {
         console.log('Sending reservation data:', reservationData);
 
         try {
-            const response = await fetch('http://localhost:9090/api/reservations', {
+            const response = await fetch(`${apiUrl}/api/reservations`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
