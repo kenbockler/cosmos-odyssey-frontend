@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 
 function RoutesPage() {
-    // const apiUrl = "http://localhost:9090";
-    const apiUrl = "https://cosmos-odyssey-core-ekf4hac5hweqcmhz.northeurope-01.azurewebsites.net";
-    // const apiUrl = import.meta.env.VITE_API_URL;
+    const apiUrl = "http://localhost:9090";
+    // const apiUrl = "https://cosmos-odyssey-core-ekf4hac5hweqcmhz.northeurope-01.azurewebsites.net";
+    // const apiUrl = import.meta.env.API_URL;
 
     const [routes, setRoutes] = useState([]);
     const [filteredRoutes, setFilteredRoutes] = useState([]);
